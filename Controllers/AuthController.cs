@@ -38,6 +38,18 @@ public class AuthUser:ControllerBase
         return Ok("user Registered");
     }
 
+    [HttpPost("log")]
+    public async Task<IActionResult> LogIn(LoginDto dto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u=> u.UserName.ToLower() == dto.Name.ToLower());
+
+        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.HashedPassword))
+        {
+            return BadRequest("invalid user name or password");
+        }
+        return Ok("user logged");
+    }
+
 
     
 }
